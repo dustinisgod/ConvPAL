@@ -37,6 +37,7 @@ end
 local function handleAssistRoutineAndReturn()
     debugPrint("DEBUG: Entering handleTankRoutineAndReturn")
         assist.assistRoutine()
+        utils.monitorNav()
         return true
 end
 
