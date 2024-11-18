@@ -27,7 +27,7 @@ local function setDefaultConfig()
     gui.chaseOn = false
     gui.chaseTarget = ""
     gui.chaseDistance = 20
-    gui.tankMelee = false
+    gui.tankOn = false
     gui.tankRange = 50
     gui.buffsOn = false
     gui.sitMed = false
@@ -95,8 +95,8 @@ local function controlGUI()
     ImGui.Spacing()
 
     -- Tank Checkbox
-    gui.tankMelee = ImGui.Checkbox("Tank", gui.tankMelee or false)
-    if gui.tankMelee then
+    gui.tankOn = ImGui.Checkbox("Tank", gui.tankOn or false)
+    if gui.tankOn then
         gui.assistOn = false
     end
 
@@ -105,10 +105,10 @@ local function controlGUI()
     -- Assist Checkbox
     gui.assistOn = ImGui.Checkbox("Assist", gui.assistOn or false)
     if gui.assistOn then
-        gui.tankMelee = false
+        gui.tankOn = false
     end
 
-    if gui.tankMelee then
+    if gui.tankOn then
 
         gui.stun1 = ImGui.Checkbox("Cease", gui.stun1 or false)
 

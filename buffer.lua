@@ -190,7 +190,7 @@ function buffer.buffRoutine()
             end
         end
 
-        if gui.botOn and gui.tankMelee then
+        if gui.botOn and gui.tankOn then
             if not handleTankRoutineAndReturn() then return end
         elseif gui.botOn and gui.assistOn then
             if not handleAssistRoutineAndReturn() then return end
