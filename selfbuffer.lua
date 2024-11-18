@@ -108,7 +108,7 @@ function selfbuffer.processBuffQueue()
 
         if gui.botOn and gui.tankMelee then
             if not handleTankRoutineAndReturn() then return end
-        elseif gui.botOn and gui.assistMelee then
+        elseif gui.botOn and gui.assistOn then
             if not handleAssistRoutineAndReturn() then return end
         end
 

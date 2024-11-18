@@ -242,7 +242,7 @@ function utils.referenceLocation(range)
 
     -- Determine reference location based on returnToCamp or chaseOn settings
     local referenceLocation
-    if gui.assistMelee and gui.returnToCamp then
+    if gui.assistOn and gui.returnToCamp then
         nav.campLocation = nav.campLocation or {x = 0, y = 0, z = 0}  -- Initialize campLocation with a default if needed
         referenceLocation = {x = nav.campLocation.x, y = nav.campLocation.y, z = nav.campLocation.z}
     elseif gui.chaseOn or (not gui.chaseon and not gui.returnToCamp) then
