@@ -307,4 +307,11 @@ function commands.init()
     end)
 end
 
+function commands.initALL()
+    -- Single binding for the /convBRD command
+    mq.bind('/convALL', function(command, ...)
+        commandHandler(command, ...)
+    end)
+end
+
 return commands
