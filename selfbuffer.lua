@@ -30,7 +30,9 @@ end
 
 -- Function to handle the heal routine and return
 local function handleTankRoutineAndReturn()
+    debugPrint("DEBUG: Entering handleTankRoutineAndReturn")
     tank.tankRoutine()
+    utils.monitorNav()
     return true
 end
 
@@ -129,7 +131,15 @@ function selfbuffer.processBuffQueue()
 
         -- Ensure spell is ready before proceeding
         while not mq.TLO.Me.SpellReady(buffTask.spell)() and readyAttempt < maxReadyAttempts do
-            if not gui.botOn then return end
+            if gui.botOn and gui.tankOn then
+                if not handleTankRoutineAndReturn() then return end
+            elseif gui.botOn and gui.assistOn then
+                if not handleAssistRoutineAndReturn() then return end
+                debugPrint("Spell not ready, waiting...")
+            elseif not gui.botOn then
+                debugPrint("Bot is off, stopping buff routine")
+                return
+            end
             readyAttempt = readyAttempt + 1
             mq.delay(1000)
         end

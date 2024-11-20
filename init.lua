@@ -24,17 +24,39 @@ mq.imgui.init('controlGUI', gui.controlGUI)
 commands.init()
 commands.initALL()
 
-spells.startup(currentLevel)
+local startupRun = false
 
-local toggleboton = gui.botOn or false
+-- Function to check the botOn status and run startup once
+local function checkBotOn(currentLevel)
+    if gui.botOn and not startupRun then
+        nav.setCamp()
+        spells.startup(currentLevel)
+        startupRun = true  -- Set flag to prevent re-running
+        printf("Bot has been turned on. Running startup.")
 
-local function returnChaseToggle()
-    if gui.botOn and gui.returnToCamp and not toggleboton then
-        if nav.campLocation == nil then
-            nav.setCamp()
-            toggleboton = true
+        local buffer = require('buffer')
+        if gui.buffsOn then
+            buffer.buffRoutine()
         end
+        local selfbuffer = require('selfbuffer')
+        if gui.buffsOn then
+            selfbuffer.selfBuffRoutine()
+        end
+
+    elseif not gui.botOn and startupRun then
+        -- Optional: Reset the flag if bot is turned off
+        startupRun = false
+    end
+end
+
+local toggleboton = false
+local function returnChaseToggle()
+    -- Check if bot is on and return-to-camp is enabled, and only set camp if toggleboton is false
+    if gui.botOn and gui.returnToCamp and not toggleboton then
+        nav.setCamp()
+        toggleboton = true
     elseif not gui.botOn and toggleboton then
+        -- Clear camp if bot is turned off after being on
         nav.clearCamp()
         toggleboton = false
     end
@@ -47,6 +69,8 @@ while gui.controlGUI do
     returnChaseToggle()
 
     if gui.botOn then
+
+        checkBotOn(currentLevel)
 
         utils.monitorNav()
 
