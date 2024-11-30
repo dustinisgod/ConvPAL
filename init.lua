@@ -84,7 +84,7 @@ while gui.controlGUI do
             assist.assistRoutine()
         end
 
-        if gui.buffsOn and mq.TLO.Me.CombatState ~= "COMBAT" then
+        if gui.buffsOn then
             utils.monitorBuffs()
         end
 

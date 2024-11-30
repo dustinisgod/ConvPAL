@@ -159,6 +159,8 @@ function buffer.buffRoutine()
             return
         end
 
+        mq.cmd('/attack off')
+        mq.delay(100)
         debugPrint("DEBUG: Targeting member ID:", memberID)
         mq.cmdf("/tar id %d", memberID)
         mq.delay(300)

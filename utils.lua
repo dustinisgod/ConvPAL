@@ -128,12 +128,12 @@ local selfbuffer = require('selfbuffer')
         local currentTime = os.time()
 
         -- Check buffs every 5 minutes (300 seconds)
-        if gui.buffsOn and (currentTime - lastBuffTime >= 240) then
+        if gui.buffsOn and mq.TLO.Me.State() ~= "COMBAT" and (currentTime - lastBuffTime >= 240) then
             debugPrint("Run Buff routine")
             buffer.buffRoutine()
             lastBuffTime = currentTime
        -- Check buffs every 5 minutes (300 seconds)
-        elseif gui.buffsOn and (currentTime - lastSelfBuffTime >= 240) then
+        elseif gui.buffsOn and mq.TLO.Me.State() ~= "COMBAT" and (currentTime - lastSelfBuffTime >= 240) then
             debugPrint("Run SelfBuff routine")
             selfbuffer.selfBuffRoutine()
             lastSelfBuffTime = currentTime
