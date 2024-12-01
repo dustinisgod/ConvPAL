@@ -126,7 +126,22 @@ function buffer.buffRoutine()
     -- Collect group or raid members based on GUI settings
     local groupMembers = {}
 
-    if mq.TLO.Raid.Members() > 0 then
+    if gui.buffGroup then
+        for i = 0, mq.TLO.Group.Members() - 1 do -- Start from 0 to include the player
+            local member = mq.TLO.Group.Member(i)
+            local memberID = member and member.ID()
+
+            -- Check for valid group members (including self as group member 0)
+            if memberID and memberID > 0 and not member.Dead() then
+                table.insert(groupMembers, memberID)
+                debugPrint("DEBUG: Added group member with ID:", memberID)
+            else
+                debugPrint("DEBUG: Skipping invalid or dead group member with ID:", memberID or "nil")
+            end
+        end
+    end
+
+    if gui.buffRaid then
         for i = 1, mq.TLO.Raid.Members() do
             local member = mq.TLO.Raid.Member(i)
             local memberID = member and member.ID()
@@ -136,18 +151,6 @@ function buffer.buffRoutine()
                 table.insert(groupMembers, memberID)
             else
                 debugPrint("DEBUG: Skipping invalid or dead raid member with ID:", memberID or "nil")
-            end
-        end
-    elseif mq.TLO.Group.Members() > 0 then
-        for i = 1, mq.TLO.Group.Members() do
-            local member = mq.TLO.Group.Member(i)
-            local memberID = member and member.ID()
-            
-            -- Only add the member if they are valid, alive, and not the player
-            if memberID and memberID > 0 and not member.Dead() then
-                table.insert(groupMembers, memberID)
-            else
-                debugPrint("DEBUG: Skipping invalid or dead group member with ID:", memberID or "nil")
             end
         end
     end
@@ -175,19 +178,23 @@ function buffer.buffRoutine()
 
         -- Check each buff type for the current member and add all missing buffs to the queue
         for _, spellType in ipairs(spellTypes) do
-            local bestSpell = spells.findBestSpell(spellType, clericLevel)
-            if bestSpell and isClassEligibleForBuff(spellType, classShortName) then
-                -- Only queue the buff if it is missing and not already queued for this member
-                if not mq.TLO.Target.Buff(bestSpell)() then
-                    if not queuedBuffs[memberID][spellType] then
-                        debugPrint("DEBUG: Adding member ID", memberID, "to buffQueue for spell type:", spellType)
-                        table.insert(buffer.buffQueue, {memberID = memberID, spell = bestSpell, spellType = spellType})
-                        queuedBuffs[memberID][spellType] = true  -- Mark buff as queued for this member
+            local bestSpell = spells.findBestSpell(spellType, charLevel)
+            local bestspellstring = tostring(bestSpell)
+            if bestspellstring and isClassEligibleForBuff(spellType, classShortName) then
+                if mq.TLO.Spell(bestspellstring).StacksTarget() then
+                    if not mq.TLO.Target.Buff(bestspellstring)() then
+                        if not queuedBuffs[memberID][spellType] then
+                            debugPrint("DEBUG: Adding member ID", memberID, "to buffQueue for spell type:", spellType)
+                            table.insert(buffer.buffQueue, {memberID = memberID, spell = bestspellstring, spellType = spellType})
+                            queuedBuffs[memberID][spellType] = true  -- Mark buff as queued for this member
+                        else
+                            debugPrint("DEBUG: Buff", spellType, "already queued for member ID", memberID, ". Skipping.")
+                        end
                     else
-                        debugPrint("DEBUG: Buff", spellType, "already queued for member ID", memberID, ". Skipping.")
+                        debugPrint("DEBUG: Buff", spellType, "already active for member ID", memberID, ". Skipping.")
                     end
                 else
-                    debugPrint("DEBUG: Buff", spellType, "already active for member ID", memberID, ". Skipping.")
+                    debugPrint("DEBUG: Skipping buff", spellType, "for member ID", memberID, "as it does not stack.")
                 end
             end
         end
