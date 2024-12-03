@@ -185,6 +185,16 @@ function assist.assistRoutine()
             end
         end
 
+        if mq.TLO.Me.Combat() and not mq.TLO.Stick() then
+            mq.cmd("/squelch /attack off")
+            return
+        end
+
+        if mq.TLO.Target() and mq.TLO.Target.Dead() or not mq.TLO.Target() then
+            mq.cmd("/squelch /attack off")
+            return
+        end
+
         mq.delay(100)
     end
 end
