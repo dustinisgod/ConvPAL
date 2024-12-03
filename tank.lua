@@ -180,10 +180,9 @@ function tank.tankRoutine()
             debugPrint("Target set to:", target.CleanName())
         end
 
-        if not mq.TLO.Target() or mq.TLO.Target() and mq.TLO.Target.ID() ~= target.ID() then
+        if not mq.TLO.Target() or (mq.TLO.Target() and mq.TLO.Target.ID() ~= target.ID()) then
             debugPrint("No target selected; exiting combat loop.")
             return
-
         elseif mq.TLO.Target() and mq.TLO.Target.Distance() ~= nil and mq.TLO.Target.Distance() <= gui.tankRange and mq.TLO.Target.LineOfSight() and not mq.TLO.Stick.Active() then
          debugPrint("Not stuck to target; initiating stick command.")
 
@@ -227,6 +226,16 @@ function tank.tankRoutine()
                 mq.delay(100)
                 mq.cmd("/squelch /nav off")
                 return
+            end
+
+            if mq.TLO.Target() and target and (mq.TLO.Target.ID() ~= target.ID() or mq.TLO.Target.Type() ~= "NPC") then
+                mq.cmdf("/target id %d", target.ID())
+                mq.delay(200)
+            end
+
+            if mq.TLO.Target() and not mq.TLO.Target.Dead() and not mq.TLO.Stick.Active() and mq.TLO.Target.Distance() <= gui.tankRange then
+                mq.cmdf("/stick front %d uw", stickDistance)
+                mq.delay(100, function() return mq.TLO.Stick.Active() end)
             end
 
             if mq.TLO.Target() and mq.TLO.Target.Distance() ~= nil and  mq.TLO.Target.Distance() <= gui.tankRange and mq.TLO.Target.LineOfSight() and not mq.TLO.Me.Combat() then
@@ -331,7 +340,7 @@ function tank.tankRoutine()
                             mq.cmd("/squelch /stopcast")
                             mq.delay(100)
                             break
-                        elseif not mq.TLO.Target() or target.Dead() then
+                        elseif not mq.TLO.Target() and target or target.Dead() then
                             mq.cmd("/squelch /stopcast")
                             break
                         end
@@ -346,24 +355,24 @@ function tank.tankRoutine()
                 local targetDistance = mq.TLO.Target.Distance()
                 
                 -- Check if stickDistance has changed
-                if lastStickDistance ~= stickDistance then
+                if lastStickDistance and  lastStickDistance ~= stickDistance then
                     lastStickDistance = stickDistance
                     mq.cmdf("/squelch /stick moveback %s", stickDistance)
                 end
         
                 -- Check if the target distance is out of bounds and adjust as necessary
-                if mq.TLO.Target.ID() then
-                    if targetDistance > upperBound then
+                if mq.TLO.Target() and not mq.TLO.Target.Dead() then
+                    if mq.TLO.Target() and targetDistance > upperBound then
                         mq.cmdf("/squelch /stick moveback %s", stickDistance)
                         mq.delay(100)
-                    elseif targetDistance < lowerBound then
+                    elseif mq.TLO.Target() and targetDistance < lowerBound then
                         mq.cmdf("/squelch /stick moveback %s", stickDistance)
                         mq.delay(100)
                     end
                 end
             end
 
-            if target.Dead() then
+            if target and target.Dead() then
                 debugPrint("Target is dead; exiting combat loop.")
                 break
             end

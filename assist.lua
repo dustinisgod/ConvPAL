@@ -77,7 +77,7 @@ function assist.assistRoutine()
     end
 
     -- Re-check the target after assisting to confirm it's an NPC within range
-    if not mq.TLO.Target() or mq.TLO.Target.Type() ~= "NPC" then
+    if not mq.TLO.Target() or (mq.TLO.Target() and mq.TLO.Target.Type() ~= "NPC") then
         return
     end
 
@@ -110,9 +110,9 @@ function assist.assistRoutine()
     while mq.TLO.Me.CombatState() == "COMBAT" and mq.TLO.Target() and not mq.TLO.Target.Dead() do
         debugPrint("Combat state: ", mq.TLO.Me.CombatState())
 
-        if not mq.TLO.Target() or mq.TLO.Target() and (mq.TLO.Target.Dead() or mq.TLO.Target.PctHPs() < 0) then
-            debugPrint("Target is dead. Exiting combat loop.")
-            break
+        -- Re-check the target after assisting to confirm it's an NPC within range
+        if not mq.TLO.Target() or (mq.TLO.Target() and mq.TLO.Target.Type() ~= "NPC") then
+            return
         end
 
         if mq.TLO.Target() and mq.TLO.Target.Distance() <= gui.assistRange and mq.TLO.Target.LineOfSight() and not mq.TLO.Me.Combat() then
@@ -121,7 +121,7 @@ function assist.assistRoutine()
             mq.delay(100)
         end
 
-        if not utils.FacingTarget() and not mq.TLO.Target.Dead() and mq.TLO.Target.LineOfSight() then
+        if mq.TLO.Target() and not utils.FacingTarget() and not mq.TLO.Target.Dead() and mq.TLO.Target.LineOfSight() then
             debugPrint("Facing target:", mq.TLO.Target.CleanName())
             mq.cmd("/squelch /face id " .. mq.TLO.Target.ID())
             mq.delay(100)
@@ -129,11 +129,11 @@ function assist.assistRoutine()
 
         if mq.TLO.Target() and mq.TLO.Target.Distance() <= gui.assistRange and mq.TLO.Target.LineOfSight() then
 
-            if mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Secondary() ~= "0" then
+            if mq.TLO.Target() and mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Secondary() ~= "0" then
                 debugPrint("Using Bash ability.")
                 mq.cmd("/doability Bash")
                 mq.delay(100)
-            elseif mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Secondary() == "0" and mq.TLO.Me.Race() == "Ogre" then
+            elseif mq.TLO.Target() and mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Secondary() == "0" and mq.TLO.Me.Race() == "Ogre" then
                 debugPrint("Using Slam ability.")
                 mq.cmd("/doability Slam")
                 mq.delay(100)
@@ -168,17 +168,17 @@ function assist.assistRoutine()
             local targetDistance = mq.TLO.Target.Distance()
             
             -- Check if stickDistance has changed
-            if lastStickDistance ~= stickDistance then
+            if lastStickDistance and lastStickDistance ~= stickDistance then
                 lastStickDistance = stickDistance
                 mq.cmdf("/squelch /stick moveback %s", stickDistance)
             end
     
             -- Check if the target distance is out of bounds and adjust as necessary
-            if mq.TLO.Target.ID() then
-                if targetDistance > upperBound then
+            if mq.TLO.Target() and not mq.TLO.Target.Dead() then
+                if mq.TLO.Target() and targetDistance > upperBound then
                     mq.cmdf("/squelch /stick moveback %s", stickDistance)
                     mq.delay(100)
-                elseif targetDistance < lowerBound then
+                elseif mq.TLO.Target() and targetDistance < lowerBound then
                     mq.cmdf("/squelch /stick moveback %s", stickDistance)
                     mq.delay(100)
                 end
