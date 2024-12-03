@@ -319,10 +319,10 @@ function tank.tankRoutine()
                 end
 
                 local spellsToCast = {
-                    {name = "Stun1", spell = spells.findBestSpell("Stun1", charLevel), slot = 1, cond = charLevel >= 7 and mq.TLO.Me.PctAggro() < 100},
-                    {name = "Stun2", spell = spells.findBestSpell("Stun2", charLevel), slot = 2, cond = charLevel >= 13 and mq.TLO.Me.PctAggro() < 100 and not mq.TLO.Me.SpellReady(1)()},
+                    {name = "Stun1", spell = spells.findBestSpell("Stun1", charLevel), slot = 1, cond = charLevel >= 7 and mq.TLO.Target() and mq.TLO.Me.PctAggro() < 100},
+                    {name = "Stun2", spell = spells.findBestSpell("Stun2", charLevel), slot = 2, cond = charLevel >= 13 and mq.TLO.Target() and mq.TLO.Me.PctAggro() < 100 and not mq.TLO.Me.SpellReady(1)()},
                     {name = "SelfAtkBuff", spell = spells.findBestSpell("SelfAtkBuff", charLevel), slot = 4, cond = charLevel >= 9 and mq.TLO.Me.Combat()},
-                    {name = "DmgUndead", spell = spells.findBestSpell("DmgUndead", charLevel), slot = 3, cond = charLevel >= 14 and (mq.TLO.Target.Type() == "Undead") and mq.TLO.Me.Combat() and mq.TLO.Me.PctMana() > 20}
+                    {name = "DmgUndead", spell = spells.findBestSpell("DmgUndead", charLevel), slot = 3, cond = charLevel >= 14 and mq.TLO.Target() and (mq.TLO.Target.Type() == "Undead") and mq.TLO.Me.Combat() and mq.TLO.Me.PctMana() > 20}
                 }
 
                 for _, spellInfo in ipairs(spellsToCast) do
