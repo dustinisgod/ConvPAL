@@ -189,8 +189,10 @@ function tank.tankRoutine()
             -- Stop or pause navigation depending on the travelTank setting
             if mq.TLO.Navigation.Active() and not mq.TLO.Navigation.Paused() then
                 if not gui.travelTank then
-                    debugPrint("Stopping navigation.")
-                    mq.cmd('/nav stop')
+                    if mq.TLO.Navigation.Active() then
+                        debugPrint("Stopping navigation.")
+                        mq.cmd("/squelch /nav stop")
+                    end
                 else
                     debugPrint("Pausing navigation.")
                     mq.cmd('/nav pause')

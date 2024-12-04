@@ -108,22 +108,31 @@ end
 local function setMeleeOptions(meleeOption, stickOption, stickDistance)
     -- Set Assist Melee on or off based on the first argument
     if meleeOption == "on" then
-        gui.assistOn = true
+        gui.assistMelee = true
         print("Assist Melee is now enabled")
     elseif meleeOption == "off" then
-        gui.assistOn = false
+        gui.assistMelee = false
         print("Assist Melee is now disabled")
-    elseif meleeOption == "front" or meleeOption == "behind" then
+    elseif meleeOption == "front" or meleeOption == "behind" or meleeOption == "side" then
         -- Set Stick position based on 'front' or 'behind' and optionally set distance
-        gui.assistOn = true
+        gui.assistMelee = true
         if meleeOption == "front" then
             gui.stickFront = true
             gui.stickBehind = false
+            gui.stickLeft = false
+            gui.stickRight = false
             print("Stick set to front")
         elseif meleeOption == "behind" then
             gui.stickBehind = true
             gui.stickFront = false
+            gui.stickLeft = false
+            gui.stickRight = false
             print("Stick set to behind")
+        elseif meleeOption == "side" then
+            gui.stickSide = true
+            gui.stickFront = false
+            gui.stickBehind = false
+            print("Stick set to side")
         end
 
         -- Check if stickDistance is provided and is a valid number
@@ -131,10 +140,10 @@ local function setMeleeOptions(meleeOption, stickOption, stickDistance)
             gui.stickDistance = tonumber(stickOption)
             print("Stick distance set to", gui.stickDistance)
         elseif stickOption then
-            print("Invalid stick distance. Usage: /convPAL melee front/behind <distance>")
+            print("Invalid stick distance. Usage: /convMNK melee front/behind <distance>")
         end
     else
-        print("Error: Invalid command. Usage: /convPAL melee on/off or /convPAL melee front/behind <distance>")
+        print("Error: Invalid command. Usage: /convMNK melee on/off or /convMNK melee front/behind/left/right <distance>")
     end
 end
 

@@ -18,8 +18,10 @@ local function setDefaultConfig()
     gui.assistRange = 40
     gui.assistPercent = 95
     gui.assistOn = true
+    gui.assistMelee = false
     gui.stickFront = false
     gui.stickBehind = true
+    gui.stickSide = false
     gui.stickDistance = 15
     gui.switchWithMA = true
     gui.returntocamp = false
@@ -217,20 +219,26 @@ local function controlGUI()
                 ImGui.Separator()
                 ImGui.Spacing()
 
-                gui.assistOn = ImGui.Checkbox("Melee", gui.assistOn or false)
-                if gui.assistOn then
-
+                gui.assistMelee = ImGui.Checkbox("Melee", gui.assistMelee or false)
+                if gui.assistMelee then
                     ImGui.Spacing()
-
                     gui.stickFront = ImGui.Checkbox("Front", gui.stickFront or false)
-                        if gui.stickFront then
-                            gui.stickBehind = false
-                        end
-
+                    if gui.stickFront then
+                        gui.stickBehind = false
+                        gui.stickSide = false
+                    end
+                    ImGui.Spacing()
                     gui.stickBehind = ImGui.Checkbox("Behind", gui.stickBehind or false)
-                        if gui.stickBehind then
-                            gui.stickFront = false
-                        end
+                    if gui.stickBehind then
+                        gui.stickFront = false
+                        gui.stickSide = false
+                    end
+                    ImGui.Spacing()
+                    gui.stickSide = ImGui.Checkbox("Side", gui.stickSide or false)
+                    if gui.stickSide then
+                        gui.stickFront = false
+                        gui.stickBehind = false
+                    end
 
                     ImGui.Spacing()
                     ImGui.Separator()
