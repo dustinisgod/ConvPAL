@@ -153,11 +153,11 @@ function assist.assistRoutine()
 
         if mq.TLO.Target() and mq.TLO.Target.Distance() <= gui.assistRange and mq.TLO.Target.LineOfSight() then
 
-            if mq.TLO.Target() and mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Secondary() ~= "0" then
+            if mq.TLO.Target() and mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Inventory('Offhand').Type() == "Shield" then
                 debugPrint("Using Bash ability.")
                 mq.cmd("/doability Bash")
                 mq.delay(100)
-            elseif mq.TLO.Target() and mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Secondary() == "0" and mq.TLO.Me.Race() == "Ogre" then
+            elseif mq.TLO.Target() and mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Inventory('Offhand').Type() ~= "Shield" and mq.TLO.Me.Race() == "Ogre" then
                 debugPrint("Using Slam ability.")
                 mq.cmd("/doability Slam")
                 mq.delay(100)

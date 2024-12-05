@@ -309,14 +309,14 @@ function tank.tankRoutine()
                     mq.delay(100)
                     mq.cmd("/squelch /target clear")
                 end
-
-                if mq.TLO.Target() and mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Secondary() ~= "0" then
+                
+                if mq.TLO.Target() and mq.TLO.Me.AbilityReady("Bash")() and mq.TLO.Me.Inventory('Offhand').Type() == "Shield" then
                     debugPrint("Using Bash ability.")
-                    mq.cmd("/squelch /doability Bash")
+                    mq.cmd("/doability Bash")
                     mq.delay(100)
-                elseif mq.TLO.Target() and mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Secondary() == "0" and mq.TLO.Me.Race() == "Ogre" then
+                elseif mq.TLO.Target() and mq.TLO.Me.AbilityReady("Slam")() and mq.TLO.Me.Inventory('Offhand').Type() ~= "Shield" and mq.TLO.Me.Race() == "Ogre" then
                     debugPrint("Using Slam ability.")
-                    mq.cmd("/squelch /doability Slam")
+                    mq.cmd("/doability Slam")
                     mq.delay(100)
                 end
 
