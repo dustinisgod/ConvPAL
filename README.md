@@ -1,3 +1,5 @@
+version=1.0.0
+
 # Convergence Paladin Bot Command Guide
 
 ### Start Script
